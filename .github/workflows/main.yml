@@ -1,0 +1,42 @@
+name: Unzip Source Code
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Source code.zip'
+  workflow_dispatch:
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Check if Source code.zip exists
+        run: |
+          if [ -f "Source code.zip" ]; then
+            echo "Found Source code.zip"
+          else
+            echo "Source code.zip not found"
+            exit 1
+          fi
+      
+      - name: Unzip Source code.zip
+        run: |
+          unzip -q "Source code.zip" -d ./source-code
+          ls -la ./source-code
+      
+      - name: Commit extracted files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ./source-code
+          git commit -m "Extract Source code.zip" || echo "No changes to commit"
+      
+      - name: Push changes
+        run: |
+          git push
