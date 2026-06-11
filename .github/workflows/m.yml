@@ -1,0 +1,38 @@
+name: Unzip Source Code
+
+on:
+  push:
+    branches:
+      - main  # Ya aapki jo bhi default branch hai (e.g., master)
+  workflow_dispatch: # Isse aap manually bhi run kar sakte ho GitHub UI se
+
+jobs:
+  extract-and-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Repository ka code checkout karna
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Check karna ki Zip file exist karti hai ya nahi
+      - name: Check Zip File Existence
+        run: |
+          if [ ! -f "Source code.zip" ]; then
+            echo "::error::'Source code.zip' file repository me nahi mili!"
+            exit 1
+          fi
+
+      # 3. Zip file ko Unzip karna
+      - name: Extract Source Code
+        run: |
+          mkdir -p extracted_source
+          unzip -o "Source code.zip" -d extracted_source
+          echo "Zip file successfully extracted to 'extracted_source/' directory."
+
+      # 4. Extracted files ko list karke verify karna
+      - name: Verify Extracted Contents
+        run: |
+          echo "=== Extracted Directory Structure ==="
+          ls -R extracted_source
+          
