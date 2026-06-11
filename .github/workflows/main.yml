@@ -1,42 +1,44 @@
-name: Unzip Source Code
+name: Unzip
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'Source code.zip'
   workflow_dispatch:
 
+# Node.js 24 force run karne ke liye environment variable
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
-  unzip:
+  extract-and-verify:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout repository
+      # 1. Repository checkout with deep fetch to prevent Git 128 error
+      - name: Checkout Repository
         uses: actions/checkout@v4
-      
-      - name: Check if Source code.zip exists
+        with:
+          fetch-depth: 0
+
+      # 2. Check if file exists (Handling case-sensitivity and spaces)
+      - name: Check Zip File Existence
         run: |
-          if [ -f "Source code.zip" ]; then
-            echo "Found Source code.zip"
-          else
-            echo "Source code.zip not found"
+          ls -la # Debugging ke liye directory contents print karega
+          if [ ! -f "Source code.zip" ]; then
+            echo "::error::'Source code.zip' file repository me nahi mili!"
             exit 1
           fi
-      
-      - name: Unzip Source code.zip
+
+      # 3. Safe Unzip execution
+      - name: Extract Source Code
         run: |
-          unzip -q "Source code.zip" -d ./source-code
-          ls -la ./source-code
-      
-      - name: Commit extracted files
+          mkdir -p extracted_source
+          unzip -o "Source code.zip" -d extracted_source
+          echo "Zip file successfully extracted to 'extracted_source/' directory."
+
+      # 4. Verification
+      - name: Verify Extracted Contents
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add ./source-code
-          git commit -m "Extract Source code.zip" || echo "No changes to commit"
-      
-      - name: Push changes
-        run: |
-          git push
+          echo "=== Extracted Directory Structure ==="
+          ls -R extracted_source
