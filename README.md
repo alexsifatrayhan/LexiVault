@@ -41,8 +41,8 @@ return v0
 
 **Built by:** **🦋⃟ᴠͥɪͣᴘͫ•𝐒𝐑𝟕 𝐌𝐨𝐝𝐬** *Expert Android Reverse Engineer & Software Modder*
 
-- **GitHub:** [alexsifatrayhan](https://github.com/alexsifatrayhan)
-- **Official Store:** [SR7 App Store](https://alexsifatrayhan.github.io/sr7mods-app-store/)
+- **GitHub:** [sr7mods](https://github.com/sr7mods)
+- **Official Store:** [SR7 App Store](https://sr7mods.github.io/sr7mods-store/)
 - **Specialization:** Smali Patching | DEX Editing | NDK Modification
 
 ---
